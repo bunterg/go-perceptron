@@ -1,3 +1,1 @@
-# Go RNN
-
-RNN made for go
+# Go sample Perceptron

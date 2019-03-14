@@ -15,4 +15,4 @@ Number of Attributes: 4
 1. class:
     1. Iris Setosa (0)
     1. Iris Versicolour (1)
-    1. Iris Virginica (2) *Removed for perceptron
+    1. Iris Virginica (2)
