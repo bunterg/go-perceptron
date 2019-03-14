@@ -33,20 +33,18 @@ func (p *Perceptron) Train(in [][]float64, o []float64, logs int) error {
 	if len(in) != len(o) {
 		return errors.New("Wrong input/output dimension size")
 	}
-	for _, i := range rand.Perm(len(in)) {
+	fails := 0
+	for ite, i := range rand.Perm(len(in)) {
 		res, _ := p.Predict(in[i])
-		// res = activation(res)
+		if res != o[i] {
+			fails++
+		}
 		p.updateWeights(res, o[i])
-		if i%logs == 0 {
-			log.Printf("EPOCH: %d \n", i)
+		if ite%logs == 0 {
+			log.Printf("EPOCH: %d \n", ite)
 			log.Printf("Out: %f \n", o[i])
 			log.Printf("RES: %f \n", res)
-			log.Printf("Succes: %t \n", res == o[i])
-			log.Printf("BIAS: %f \n", p.GetBias())
-			log.Println("QUERY:")
-			log.Println(in[i])
-			log.Println("WEIGHTS:")
-			log.Println(p.GetWeights())
+			log.Printf("Succes rate: %f %% \n", float32(fails)/float32(ite+1)*100)
 		}
 
 	}
@@ -81,4 +79,11 @@ func (p *Perceptron) GetWeights() []float64 {
 // GetBias returns current bias
 func (p *Perceptron) GetBias() float64 {
 	return p.weights[0]
+}
+
+// DisplayData shows currents values for some params
+func (p *Perceptron) DisplayData() {
+	log.Printf("BIAS: %f \n", p.GetBias())
+	log.Println("WEIGHTS:")
+	log.Println(p.GetWeights())
 }

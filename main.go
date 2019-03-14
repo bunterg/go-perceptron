@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/csv"
-	"fmt"
 	"io"
 	"log"
 	"math"
@@ -35,12 +34,13 @@ func main() {
 	p := NewPerceptron(4, 0.1, func(res float64) float64 {
 		out := math.Min(res, 2)
 		out = math.Max(res, 0)
-		if out > 0 || out < 2 {
+		if out > 0 && out < 2 {
 			out = 1
 		}
 		return out
 	})
-	p.Train(iTest, oTest, 5)
+	p.Train(iTest, oTest, 1)
+	p.DisplayData()
 }
 
 func readerToDataInput(r *csv.Reader) [][]float64 {
@@ -59,7 +59,6 @@ func readerToDataInput(r *csv.Reader) [][]float64 {
 			res[i][j], _ = strconv.ParseFloat(r, 64)
 		}
 		i++
-		fmt.Println(record)
 	}
 	return res
 }
@@ -79,22 +78,4 @@ func readerToDataOutput(r *csv.Reader) []float64 {
 		i++
 	}
 	return res
-}
-
-// ACTIVATION FUNCTIONS
-func sigmoid(x float64) float64 {
-	return 1 / (1 + math.Exp(-x))
-}
-
-func reLU(x float64) float64 {
-	return math.Max(0, x)
-}
-
-func tanh(x float64) float64 {
-	return math.Tanh(x)
-}
-
-//
-func sigmoidDerivative(x float64) float64 {
-	return x * (1 - x)
 }
