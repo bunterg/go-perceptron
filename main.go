@@ -2,11 +2,13 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
 	"log"
 	"math"
 	"os"
 	"strconv"
+	"time"
 )
 
 const (
@@ -31,7 +33,7 @@ func main() {
 	iTest := readerToDataInput(csv.NewReader(fileTestInput))
 	oTest := readerToDataOutput(csv.NewReader(fileTestOutput))
 
-	p := NewPerceptron(4, 0.1, func(res float64) float64 {
+	p := NewPerceptron(4, 0.05, func(res float64) float64 {
 		out := math.Min(res, 2)
 		out = math.Max(res, 0)
 		if out > 0 && out < 2 {
@@ -39,8 +41,11 @@ func main() {
 		}
 		return out
 	})
-	p.Train(iTest, oTest, 1)
+	start := time.Now()
+	p.Train(iTest, oTest, 50)
 	p.DisplayData()
+	t := time.Now()
+	fmt.Println(t.Sub(start))
 }
 
 func readerToDataInput(r *csv.Reader) [][]float64 {

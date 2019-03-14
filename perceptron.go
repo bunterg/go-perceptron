@@ -29,24 +29,22 @@ func NewPerceptron(i uint, lR float64, activation func(res float64) float64) *Pe
 }
 
 // Train network with given input and result
-func (p *Perceptron) Train(in [][]float64, o []float64, logs int) error {
+func (p *Perceptron) Train(in [][]float64, o []float64, epoch int) error {
 	if len(in) != len(o) {
 		return errors.New("Wrong input/output dimension size")
 	}
-	fails := 0
-	for ite, i := range rand.Perm(len(in)) {
-		res, _ := p.Predict(in[i])
-		if res != o[i] {
-			fails++
+	for ep := 0; ep < epoch; ep++ {
+		fails := 0
+		for _, i := range rand.Perm(len(in)) {
+			res, _ := p.Predict(in[i])
+			if res != o[i] {
+				fails++
+			}
+			p.updateWeights(res, o[i])
 		}
-		p.updateWeights(res, o[i])
-		if ite%logs == 0 {
-			log.Printf("EPOCH: %d \n", ite)
-			log.Printf("Out: %f \n", o[i])
-			log.Printf("RES: %f \n", res)
-			log.Printf("Succes rate: %f %% \n", float32(fails)/float32(ite+1)*100)
-		}
-
+		log.Printf("EPOCH: %d \n", ep)
+		log.Printf("Fail rate: %f %% \n", float32(fails)/float32(len(in)*ep)*100)
+		p.DisplayData()
 	}
 	return nil
 }
